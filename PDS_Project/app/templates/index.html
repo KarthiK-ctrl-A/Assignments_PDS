@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Customer Churn Prediction</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Telco Customer Churn Prediction</h1>
+
+        <form action="/predict" method="post">
+            <div class="grid-form">
+                {% for feature in feature_names %}
+                    <div class="form-group">
+                        <label for="{{ feature }}">{{ feature }}</label>
+                        {% if feature_options[feature]|length > 0 %}
+                            <select name="{{ feature }}" required>
+                                <option value="" disabled selected>Select {{ feature }}</option>
+                                {% for label, val in feature_options[feature] %}
+                                    <option value="{{ val }}"
+                                        {% if form_values and form_values[feature] == val|string %} selected {% endif %}>
+                                        {{ label }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        {% else %}
+                            <input type="number" step="any" name="{{ feature }}" 
+                                   placeholder="{{ feature }}"
+                                   value="{{ form_values[feature] if form_values else '' }}" required>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div class="prompt-box">
+                <label for="prompt">Ask for Insights (optional)</label>
+                <textarea name="prompt" placeholder="e.g., What does this prediction mean?" rows="3">{{ form_values['prompt'] if form_values and 'prompt' in form_values else '' }}</textarea>
+            </div>
+            <!-- <div class="prompt-box">
+                <label for="support_text">Customer Support Chat (optional)</label>
+                <textarea name="support_text" placeholder="Paste or type support messages here..." rows="3">{{ form_values['support_text'] if form_values and 'support_text' in form_values else '' }}</textarea>
+            </div> -->
+            
+
+            <input type="submit" value="Predict">
+        </form>
+
+        {% if prediction_text %}
+            <h2>Prediction: {{ prediction_text }}</h2>
+        {% endif %}
+        <!-- {% if sentiment_result %}
+            <div class="insight">
+                <h3>Support Sentiment:</h3>
+                <p>{{ sentiment_result['label'] }} (Score: {{ sentiment_result['score'] | round(2) }})</p>
+            </div>
+        {% endif %} -->
+        {% if customer_journey %}
+            <div class="insight">
+                <h3>Customer Journey Summary:</h3>
+                <p>{{ customer_journey }}</p>
+            </div>
+        {% endif %}
+        {% if llm_output %}
+            <div class="insight">
+                <h3>Insight:</h3>
+                <p>{{ llm_output|safe }}</p>
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>
