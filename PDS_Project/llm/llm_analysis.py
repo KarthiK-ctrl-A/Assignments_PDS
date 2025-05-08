@@ -9,7 +9,7 @@ def generate_llm_insight(customer_info, question, prediction):
     if prediction == 0:  # If prediction is 0 (no churn)
         prompt = f"""
         You are a helpful customer retention expert.
-        Given this customer data: {customer_info},
+        Given this customer data: {customer_info}, and {question}
         - The model predicts that the customer will NOT churn.
         - Explain why the customer is likely to stay with the service.
         - Highlight 2 reasons why they are satisfied with the service and are unlikely to churn.
@@ -20,7 +20,7 @@ def generate_llm_insight(customer_info, question, prediction):
     else:  # If prediction is not 0 (churn)
         prompt = f"""
         You are a helpful customer retention expert.
-        Given this customer data: {customer_info},
+        Given this customer data: {customer_info}, and {question}
         - The model predicts that the customer is likely to churn.
         - Give 2 reasons why they might be exiting the service.
         - Provide 1 strong plan to retain them and prevent churn.
